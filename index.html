@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TinyWonder 제품 추천</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Patua+One&display=swap" rel="stylesheet">
+
+<style>
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background-color: #fef0f5;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  /* ★ 2. 제목(h1)에 Patua One 폰트 적용하기 ★ */
+  h1 {
+    font-family: 'Patua One', serif; /* 여기가 변경되었습니다 */
+    color: #d22c58;
+    text-align: center;
+    font-size: 48px; /* 폰트가 굵고 힘이 있어서 조금 더 키웠습니다 */
+    margin-bottom: 10px;
+    letter-spacing: 1px; /* 글자 간격을 살짝 넓혀서 더 멋스럽게 */
+  }
+
+  .container {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    max-width: 600px;
+    width: 100%;
+  }
+  .form-group {
+    margin-bottom: 20px;
+  }
+  label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #d22c58;
+  }
+  select, .action-btn {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 2px solid #f8c8d8;
+    font-size: 16px;
+    box-sizing: border-box;
+  }
+  .recommend-btn {
+    background-color: #d22c58;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    border: none;
+    margin-top: 10px;
+  }
+  .recommend-btn:hover {
+    background-color: #a32245;
+  }
+  #recommendation-result {
+    margin-top: 30px;
+    padding: 20px;
+    background-color: #fdf1f5;
+    border-radius: 10px;
+    display: none;
+    border: 1px solid #f8c8d8;
+  }
+  .product-list {
+    list-style: none;
+    padding: 0;
+  }
+  .product-item {
+    padding: 10px 0;
+    border-bottom: 1px dashed #d22c58;
+    display: flex;
+    justify-content: space-between;
+  }
+  .product-item:last-child {
+    border-bottom: none;
+  }
+  .product-name {
+    font-weight: bold;
+    color: #d22c58;
+  }
+  .product-texture {
+    font-size: 14px;
+    color: #666;
+  }
+  .shop-link-container {
+    margin-top: 40px;
+    text-align: center;
+    border-top: 2px solid #eee;
+    padding-top: 20px;
+  }
+  .shop-btn {
+    display: block;
+    width: 100%;
+    padding: 15px 0;
+    
+    /* 버튼 색상 (원하시는 색으로 유지했습니다) */
+    background-color: #ff9edf; 
+    
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 16px;
+    transition: background-color 0.3s;
+    text-align: center;
+  }
+  .shop-btn:hover {
+    background-color: #555;
+  }
+</style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Tiny Wonder Color Graph</h1> <p style="text-align: center; color: #666;">나의 퍼스널 컬러에 딱 맞는 컬러를 찾아보세요.</p>
+
+    <div class="form-group">
+      <label for="skinTone">피부 톤 (Tone)</label>
+      <select id="skinTone">
+        <option value="warm">웜톤 (Warm)</option>
+        <option value="cool">쿨톤 (Cool)</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="season">계절 (Season)</label>
+      <select id="season">
+        <option value="spring">봄 (Spring)</option>
+        <option value="summer">여름 (Summer)</option>
+        <option value="autumn">가을 (Autumn)</option>
+        <option value="winter">겨울 (Winter)</option>
+      </select>
+    </div>
+
+    <button class="action-btn recommend-btn" onclick="recommendProducts()">제품 추천 받기</button>
+
+    <div id="recommendation-result">
+      <h3 style="margin-top: 0; color: #d22c58;">추천 제품:</h3>
+      <ul class="product-list" id="productList"></ul>
+    </div>
+
+    <div class="shop-link-container">
+      <p style="margin-bottom: 10px; font-size: 14px;">마음에 드는 컬러를 찾으셨나요?</p>
+      
+      <a href="https://tinywonder.co.kr/" target="_blank" class="shop-btn">
+        제품 보러 가기 &rarr;
+      </a>
+    
+    </div>
+  </div>
+
+<script>
+const products = [
+  { name: "01 Apricot For U", texture: "Hyper Dewy", tone: "warm", season: "spring" },
+  { name: "03 Cocoa Glaze", texture: "Honey Glaze", tone: "warm", season: "spring" },
+  { name: "02 Awesome Heart", texture: "Hyper Blur", tone: "warm", season: "spring" },
+  { name: "01 Like Cherry", texture: "Hyper Blur", tone: "warm", season: "spring" },
+  { name: "02 Coral Breeze", texture: "Honey Glaze", tone: "cool", season: "summer" },
+  { name: "01 Peach Drop", texture: "Honey Glaze", tone: "cool", season: "summer" },
+  { name: "03 Scrunchie Pink", texture: "Hyper Blur", tone: "cool", season: "summer" },
+  { name: "05 Shining Rosy", texture: "Hyper Dewy", tone: "cool", season: "summer" },
+  { name: "03 Holiday Apple", texture: "Hyper Dewy", tone: "warm", season: "autumn" },
+  { name: "05 So Chilly", texture: "Hyper Blur", tone: "warm", season: "autumn" },
+  { name: "04 Mauve Potion", texture: "Hyper Blur", tone: "warm", season: "autumn" },
+  { name: "02 Dreamy Fig", texture: "Hyper Dewy", tone: "cool", season: "winter" },
+  { name: "04 Pink Silhouette", texture: "Hyper Dewy", tone: "cool", season: "winter" },
+  { name: "06 Mauve Dive", texture: "Hyper Dewy", tone: "cool", season: "winter" },
+  { name: "06 Grape Slander", texture: "Hyper Blur", tone: "cool", season: "winter" }
+];
+
+function recommendProducts() {
+  const selectedTone = document.getElementById('skinTone').value;
+  const selectedSeason = document.getElementById('season').value;
+  const resultDiv = document.getElementById('recommendation-result');
+  const productList = document.getElementById('productList');
+
+  productList.innerHTML = '';
+  resultDiv.style.display = 'block';
+
+  const recommended = products.filter(product => {
+    return product.tone === selectedTone && product.season === selectedSeason;
+  });
+
+  if (recommended.length > 0) {
+    recommended.forEach(product => {
+      const li = document.createElement('li');
+      li.classList.add('product-item');
+      li.innerHTML = `<span class="product-name">${product.name}</span><span class="product-texture">${product.texture}</span>`;
+      productList.appendChild(li);
+    });
+  } else {
+    const li = document.createElement('li');
+    li.classList.add('product-item');
+    li.textContent = "조건에 맞는 제품을 찾지 못했어요.";
+    productList.appendChild(li);
+  }
+}
+</script>
+
+</body>
+</html>
