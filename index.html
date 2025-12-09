@@ -3,15 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TinyWonder 제품 추천</title>
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Patua+One&display=swap" rel="stylesheet">
+<title>Tiny Wonder 제품 추천</title>
 
 <style>
+  /* ★ 1. 내 폰트 등록하기 (TWfont.otf) ★ */
+  /* 이 파일이 html 파일과 같은 폴더에 있어야 합니다 */
+  @font-face {
+    font-family: 'TinyWonderCustom'; 
+    src: url('TWfont.otf');
+  }
+
   body {
-    font-family: 'Noto Sans KR', sans-serif;
+    font-family: 'Noto Sans KR', sans-serif; /* 전체 기본 폰트 */
     background-color: #fef0f5;
     color: #333;
     margin: 0;
@@ -21,14 +24,28 @@
     align-items: center;
   }
   
-  /* ★ 2. 제목(h1)에 Patua One 폰트 적용하기 ★ */
+  /* ★ 2. 제목(h1) 스타일 설정 ★ */
   h1 {
-    font-family: 'Patua One', serif; /* 여기가 변경되었습니다 */
     color: #d22c58;
     text-align: center;
-    font-size: 48px; /* 폰트가 굵고 힘이 있어서 조금 더 키웠습니다 */
     margin-bottom: 10px;
-    letter-spacing: 1px; /* 글자 간격을 살짝 넓혀서 더 멋스럽게 */
+    line-height: 1.2; /* 두 줄 사이의 간격 조절 */
+  }
+
+  /* 첫 번째 줄: 커스텀 폰트 적용 */
+  .title-brand {
+    font-family: 'TinyWonderCustom', serif; 
+    font-size: 52px; /* 브랜드명은 크게 */
+    display: block;  /* 줄바꿈 강제 */
+  }
+
+  /* 두 번째 줄: 기본 폰트 적용 */
+  .title-desc {
+    font-family: 'Noto Sans KR', sans-serif; 
+    font-size: 24px; /* 설명은 조금 작게 */
+    display: block;  /* 줄바꿈 강제 */
+    font-weight: bold;
+    margin-top: 5px;
   }
 
   .container {
@@ -107,10 +124,7 @@
     display: block;
     width: 100%;
     padding: 15px 0;
-    
-    /* 버튼 색상 (원하시는 색으로 유지했습니다) */
-    background-color: #ff9edf; 
-    
+    background-color: #f399ff; 
     color: white;
     text-decoration: none;
     border-radius: 8px;
@@ -127,7 +141,12 @@
 <body>
 
   <div class="container">
-    <h1>Tiny Wonder Color Graph</h1> <p style="text-align: center; color: #666;">나의 퍼스널 컬러에 딱 맞는 컬러를 찾아보세요.</p>
+    <h1>
+      <span class="title-brand">TinyWonder</span>
+      <span class="title-desc">Color Recommendations</span>
+    </h1>
+    
+    <p style="text-align: center; color: #666;">나의 퍼스널 컬러에 딱 맞는 컬러를 찾아보세요.</p>
 
     <div class="form-group">
       <label for="skinTone">피부 톤 (Tone)</label>
