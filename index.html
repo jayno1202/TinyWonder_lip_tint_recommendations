@@ -6,15 +6,14 @@
 <title>Tiny Wonder 제품 추천</title>
 
 <style>
-  /* ★ 1. 내 폰트 등록하기 (TWfont.otf) ★ */
-  /* 이 파일이 html 파일과 같은 폴더에 있어야 합니다 */
+  /* 1. 내 폰트 등록 (TWfont.otf 파일이 같은 폴더에 있어야 함) */
   @font-face {
     font-family: 'TinyWonderCustom'; 
     src: url('TWfont.otf');
   }
 
   body {
-    font-family: 'Noto Sans KR', sans-serif; /* 전체 기본 폰트 */
+    font-family: 'Noto Sans KR', sans-serif;
     background-color: #fef0f5;
     color: #333;
     margin: 0;
@@ -24,26 +23,24 @@
     align-items: center;
   }
   
-  /* ★ 2. 제목(h1) 스타일 설정 ★ */
+  /* 2. 제목 스타일 */
   h1 {
     color: #d22c58;
     text-align: center;
     margin-bottom: 10px;
-    line-height: 1.2; /* 두 줄 사이의 간격 조절 */
+    line-height: 1.2;
   }
 
-  /* 첫 번째 줄: 커스텀 폰트 적용 */
   .title-brand {
     font-family: 'TinyWonderCustom', serif; 
-    font-size: 52px; /* 브랜드명은 크게 */
-    display: block;  /* 줄바꿈 강제 */
+    font-size: 52px;
+    display: block;
   }
 
-  /* 두 번째 줄: 기본 폰트 적용 */
   .title-desc {
     font-family: 'Noto Sans KR', sans-serif; 
-    font-size: 24px; /* 설명은 조금 작게 */
-    display: block;  /* 줄바꿈 강제 */
+    font-size: 24px;
+    display: block;
     font-weight: bold;
     margin-top: 5px;
   }
@@ -97,29 +94,52 @@
     list-style: none;
     padding: 0;
   }
+  
   .product-item {
-    padding: 10px 0;
     border-bottom: 1px dashed #d22c58;
-    display: flex;
-    justify-content: space-between;
+    padding: 0; 
   }
   .product-item:last-child {
     border-bottom: none;
   }
+  
+  /* 클릭 가능한 링크 박스 스타일 */
+  .product-link-block {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 10px 0;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  
+  /* 마우스 올렸을 때 효과 */
+  .product-link-block:hover .product-name {
+    text-decoration: underline;
+    color: #a32245;
+  }
+
   .product-name {
     font-weight: bold;
     color: #d22c58;
+    font-size: 16px;
   }
+  
+  /* 아이콘 코드 삭제함 */
+
   .product-texture {
     font-size: 14px;
-    color: #666;
+    color: #666; 
   }
+
   .shop-link-container {
     margin-top: 40px;
     text-align: center;
     border-top: 2px solid #eee;
     padding-top: 20px;
   }
+  
   .shop-btn {
     display: block;
     width: 100%;
@@ -134,7 +154,7 @@
     text-align: center;
   }
   .shop-btn:hover {
-    background-color: #555;
+    filter: brightness(0.9);
   }
 </style>
 </head>
@@ -146,7 +166,7 @@
       <span class="title-desc">Color Recommendations</span>
     </h1>
     
-    <p style="text-align: center; color: #666;">나의 퍼스널 컬러에 딱 맞는 컬러를 찾아보세요.</p>
+    <p style="text-align: center; color: #666;">🍒나의 퍼스널 컬러에 딱 맞는 컬러를 찾아보세요🍒</p>
 
     <div class="form-group">
       <label for="skinTone">피부 톤 (Tone)</label>
@@ -169,15 +189,15 @@
     <button class="action-btn recommend-btn" onclick="recommendProducts()">제품 추천 받기</button>
 
     <div id="recommendation-result">
-      <h3 style="margin-top: 0; color: #d22c58;">추천 제품:</h3>
+      <h3 style="margin-top: 0; color: #d22c58;">추천 제품 (클릭해서 자세히 보기):</h3>
       <ul class="product-list" id="productList"></ul>
     </div>
 
     <div class="shop-link-container">
-      <p style="margin-bottom: 10px; font-size: 14px;">마음에 드는 컬러를 찾으셨나요?</p>
+      <p style="margin-bottom: 10px; font-size: 14px;">전체 제품을 보고 싶으신가요?</p>
       
-      <a href="https://tinywonder.co.kr/" target="_blank" class="shop-btn">
-        제품 보러 가기 &rarr;
+      <a href="https://tinywonder.co.kr/index.html" target="_blank" class="shop-btn">
+        자사몰 홈으로 가기 &rarr;
       </a>
     
     </div>
@@ -185,21 +205,28 @@
 
 <script>
 const products = [
-  { name: "01 Apricot For U", texture: "Hyper Dewy", tone: "warm", season: "spring" },
-  { name: "03 Cocoa Glaze", texture: "Honey Glaze", tone: "warm", season: "spring" },
-  { name: "02 Awesome Heart", texture: "Hyper Blur", tone: "warm", season: "spring" },
-  { name: "01 Like Cherry", texture: "Hyper Blur", tone: "warm", season: "spring" },
-  { name: "02 Coral Breeze", texture: "Honey Glaze", tone: "cool", season: "summer" },
-  { name: "01 Peach Drop", texture: "Honey Glaze", tone: "cool", season: "summer" },
-  { name: "03 Scrunchie Pink", texture: "Hyper Blur", tone: "cool", season: "summer" },
-  { name: "05 Shining Rosy", texture: "Hyper Dewy", tone: "cool", season: "summer" },
-  { name: "03 Holiday Apple", texture: "Hyper Dewy", tone: "warm", season: "autumn" },
-  { name: "05 So Chilly", texture: "Hyper Blur", tone: "warm", season: "autumn" },
-  { name: "04 Mauve Potion", texture: "Hyper Blur", tone: "warm", season: "autumn" },
-  { name: "02 Dreamy Fig", texture: "Hyper Dewy", tone: "cool", season: "winter" },
-  { name: "04 Pink Silhouette", texture: "Hyper Dewy", tone: "cool", season: "winter" },
-  { name: "06 Mauve Dive", texture: "Hyper Dewy", tone: "cool", season: "winter" },
-  { name: "06 Grape Slander", texture: "Hyper Blur", tone: "cool", season: "winter" }
+  // Spring (Warm)
+  { name: "01 Apricot For U", texture: "Hyper Dewy", tone: "warm", season: "spring", link: "https://tinywonder.co.kr/product/detail.html?product_no=17&cate_no=24&display_group=1" },
+  { name: "03 Cocoa Glaze", texture: "Honey Glaze", tone: "warm", season: "spring", link: "https://tinywonder.co.kr/product/detail.html?product_no=36&cate_no=51&display_group=1" },
+  { name: "02 Awesome Heart", texture: "Hyper Blur", tone: "warm", season: "spring", link: "https://tinywonder.co.kr/product/detail.html?product_no=20&cate_no=44&display_group=1" },
+  { name: "01 Like Cherry", texture: "Hyper Blur", tone: "warm", season: "spring", link: "https://tinywonder.co.kr/product/detail.html?product_no=20&cate_no=44&display_group=1" },
+
+  // Summer (Cool)
+  { name: "02 Coral Breeze", texture: "Honey Glaze", tone: "cool", season: "summer", link: "https://tinywonder.co.kr/product/detail.html?product_no=36&cate_no=51&display_group=1" },
+  { name: "01 Peach Drop", texture: "Honey Glaze", tone: "cool", season: "summer", link: "https://tinywonder.co.kr/product/detail.html?product_no=36&cate_no=51&display_group=1" },
+  { name: "03 Scrunchie Pink", texture: "Hyper Blur", tone: "cool", season: "summer", link: "https://tinywonder.co.kr/product/detail.html?product_no=20&cate_no=44&display_group=1" },
+  { name: "05 Shining Rosy", texture: "Hyper Dewy", tone: "cool", season: "summer", link: "https://tinywonder.co.kr/product/detail.html?product_no=17&cate_no=24&display_group=1" },
+
+  // Autumn (Warm)
+  { name: "03 Holiday Apple", texture: "Hyper Dewy", tone: "warm", season: "autumn", link: "https://tinywonder.co.kr/product/detail.html?product_no=17&cate_no=24&display_group=1" },
+  { name: "05 So Chilly", texture: "Hyper Blur", tone: "warm", season: "autumn", link: "https://tinywonder.co.kr/product/detail.html?product_no=20&cate_no=44&display_group=1" },
+  { name: "04 Mauve Potion", texture: "Hyper Blur", tone: "warm", season: "autumn", link: "https://tinywonder.co.kr/product/detail.html?product_no=20&cate_no=44&display_group=1" },
+
+  // Winter (Cool)
+  { name: "02 Dreamy Fig", texture: "Hyper Dewy", tone: "cool", season: "winter", link: "https://tinywonder.co.kr/product/detail.html?product_no=17&cate_no=24&display_group=1" },
+  { name: "04 Pink Silhouette", texture: "Hyper Dewy", tone: "cool", season: "winter", link: "https://tinywonder.co.kr/product/detail.html?product_no=17&cate_no=24&display_group=1" },
+  { name: "06 Mauve Dive", texture: "Hyper Dewy", tone: "cool", season: "winter", link: "https://tinywonder.co.kr/product/detail.html?product_no=17&cate_no=24&display_group=1" },
+  { name: "06 Grape Slander", texture: "Hyper Blur", tone: "cool", season: "winter", link: "https://tinywonder.co.kr/product/detail.html?product_no=20&cate_no=44&display_group=1" }
 ];
 
 function recommendProducts() {
@@ -219,7 +246,13 @@ function recommendProducts() {
     recommended.forEach(product => {
       const li = document.createElement('li');
       li.classList.add('product-item');
-      li.innerHTML = `<span class="product-name">${product.name}</span><span class="product-texture">${product.texture}</span>`;
+      
+      li.innerHTML = `
+        <a href="${product.link}" target="_blank" class="product-link-block">
+          <span class="product-name">${product.name}</span>
+          <span class="product-texture">${product.texture}</span>
+        </a>
+      `;
       productList.appendChild(li);
     });
   } else {
