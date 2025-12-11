@@ -6,14 +6,23 @@
 <title>Tiny Wonder 제품 추천</title>
 
 <style>
-  /* 1. 내 폰트 등록 (TWfont.otf 파일이 같은 폴더에 있어야 함) */
+  /* ★ 1. 폰트 등록 ★ */
+  
+  /* (1) 브랜드 로고용 포인트 폰트 (TWsunflower.otf) */
   @font-face {
     font-family: 'TinyWonderCustom'; 
-    src: url('TWfont.otf');
+    src: url('TWsunflower.otf'); 
+  }
+
+  /* (2) 나머지 전체 텍스트용 일반 폰트 (TWsuit.otf) */
+  @font-face {
+    font-family: 'TinyWonderNormal'; 
+    src: url('TWsuit.otf');      
   }
 
   body {
-    font-family: 'Noto Sans KR', sans-serif;
+    /* 기본 폰트를 TWsuit(TinyWonderNormal)로 설정 */
+    font-family: 'TinyWonderNormal', sans-serif;
     background-color: #fef0f5;
     color: #333;
     margin: 0;
@@ -31,6 +40,7 @@
     line-height: 1.2;
   }
 
+  /* TinyWonder 텍스트만 전용 폰트(TWsunflower) 사용 */
   .title-brand {
     font-family: 'TinyWonderCustom', serif; 
     font-size: 52px;
@@ -38,8 +48,8 @@
     letter-spacing: -1px; 
   }
 
+  /* 아래 설명은 기본 폰트(TWsuit) 사용 */
   .title-desc {
-    font-family: 'Noto Sans KR', sans-serif; 
     font-size: 24px;
     display: block;
     font-weight: bold;
@@ -83,6 +93,7 @@
     border: 2px solid #f8c8d8;
     font-size: 16px;
     box-sizing: border-box;
+    font-family: 'TinyWonderNormal', sans-serif; /* 폰트 강제 적용 */
   }
   .recommend-btn {
     background-color: #d22c58;
@@ -167,6 +178,11 @@
   .shop-btn:hover {
     filter: brightness(0.9);
   }
+  
+  /* 이스터에그 및 포인트용 전용 폰트 클래스 (TWsunflower) */
+  .tw-font {
+    font-family: 'TinyWonderCustom', serif;
+  }
 </style>
 </head>
 <body>
@@ -208,7 +224,7 @@
       <p style="margin-bottom: 10px; font-size: 14px;">전체 제품을 보고 싶으신가요?</p>
       
       <a href="https://tinywonder.co.kr/index.html" target="_blank" class="shop-btn">
-        자사몰 홈으로 가기 &rarr;
+        <span class="tw-font">TinyWonder</span> 놀러가기 &rarr;
       </a>
     
     </div>
@@ -218,7 +234,7 @@
 // ★ 변수 설정 ★
 let clickCount = 0;
 let firstClickTime = 0;
-let isEasterEggShown = false; // 이스터에그가 현재 떠 있는지 확인하는 변수
+let isEasterEggShown = false; 
 
 const products = [
   // Spring (Warm)
@@ -252,17 +268,14 @@ function recommendProducts() {
   const resultTitle = document.getElementById('resultTitle');
   const productList = document.getElementById('productList');
 
-  // ★ 1. 이스터에그가 떠 있는 상태인지 확인 ★
+  // ★ 1. 이스터에그 상태 확인 및 리셋 ★
   if (isEasterEggShown) {
-    // 이미 이스터에그 상태라면 이번 클릭은 '초기화(Reset)'입니다.
     isEasterEggShown = false;
     clickCount = 0;
     firstClickTime = 0;
-    
-    // 카운트를 올리지 않고 바로 정상 결과 로직으로 내려갑니다.
   } 
   else {
-    // ★ 2. 이스터에그 상태가 아닐 때만 시간 및 클릭 수 체크 ★
+    // ★ 2. 시간 및 클릭 수 체크 ★
     const currentTime = new Date().getTime();
 
     if (clickCount === 0 || (currentTime - firstClickTime > 5000)) {
@@ -275,11 +288,11 @@ function recommendProducts() {
 
   // ★ 3. 5번 클릭 달성 시 이스터에그 보여주기 ★
   if (clickCount === 5) {
-      isEasterEggShown = true; // 상태 변경
+      isEasterEggShown = true; 
       
       productList.innerHTML = '';
       resultDiv.style.display = 'block';
-      resultTitle.style.display = 'none'; // 제목 숨기기
+      resultTitle.style.display = 'none'; 
 
       const li = document.createElement('li');
       li.classList.add('product-item');
@@ -288,26 +301,25 @@ function recommendProducts() {
       li.style.border = 'none'; 
       li.style.padding = '20px 0';
 
+      // ★ 이스터에그 텍스트 수정됨 (TinyWonder에 전용 폰트 적용) ★
       li.innerHTML = `
         <div style="font-size: 15px; color: #555; margin-bottom: 10px;">
-            다른 제품들도 추천받아 보고 싶으셨나요?<br>
-            타이니원더에서 문의주세요.
+            🥹다른 제품들도 추천받아 보고 싶으셨나요?<br>
+            <span class="tw-font">TinyWonder</span>에서 문의주세요📞
         </div>
         <a href="https://tinywonder.co.kr/" target="_blank" style="color: #d22c58; font-weight: bold; font-size: 18px; text-decoration: none;">
-           💖타이니원더 바로가기💖
+           💖<span class="tw-font">TinyWonder</span> 바로가기💖
         </a>
       `;
       productList.appendChild(li);
 
-      // 이번엔 clickCount를 0으로 만들지 않습니다.
-      // 그래야 다음에 눌렀을 때 'isEasterEggShown' 조건에 걸려서 리셋이 됩니다.
       return; 
   }
 
-  // ★ 4. 정상적인 추천 로직 (이스터에그가 아닐 때) ★
+  // ★ 4. 정상적인 추천 로직 ★
   productList.innerHTML = '';
   resultDiv.style.display = 'block';
-  resultTitle.style.display = 'block'; // 제목 다시 보이기
+  resultTitle.style.display = 'block'; 
 
   const recommended = products.filter(product => {
     return product.tone === selectedTone && product.season === selectedSeason;
