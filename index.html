@@ -21,7 +21,6 @@
   }
 
   body {
-    /* 기본 폰트를 TWsuit(TinyWonderNormal)로 설정 */
     font-family: 'TinyWonderNormal', sans-serif;
     background-color: #fef0f5;
     color: #333;
@@ -40,7 +39,6 @@
     line-height: 1.2;
   }
 
-  /* TinyWonder 텍스트만 전용 폰트(TWsunflower) 사용 */
   .title-brand {
     font-family: 'TinyWonderCustom', serif; 
     font-size: 52px;
@@ -48,7 +46,6 @@
     letter-spacing: -1px; 
   }
 
-  /* 아래 설명은 기본 폰트(TWsuit) 사용 */
   .title-desc {
     font-size: 24px;
     display: block;
@@ -93,7 +90,7 @@
     border: 2px solid #f8c8d8;
     font-size: 16px;
     box-sizing: border-box;
-    font-family: 'TinyWonderNormal', sans-serif; /* 폰트 강제 적용 */
+    font-family: 'TinyWonderNormal', sans-serif;
   }
   .recommend-btn {
     background-color: #d22c58;
@@ -128,7 +125,6 @@
     border-bottom: none;
   }
   
-  /* 클릭 가능한 링크 박스 스타일 */
   .product-link-block {
     display: flex;
     justify-content: space-between;
@@ -179,7 +175,6 @@
     filter: brightness(0.9);
   }
   
-  /* 이스터에그 및 포인트용 전용 폰트 클래스 (TWsunflower) */
   .tw-font {
     font-family: 'TinyWonderCustom', serif;
   }
@@ -193,7 +188,7 @@
       <span class="title-desc">Color Recommendations</span>
     </h1>
     
-    <p style="text-align: center; color: #666;">나의 퍼스널 컬러에 딱 맞는 립 틴트를 찾아보세요.</p>
+    <p style="text-align: center; color: #666;">🍒나의 퍼스널 컬러에 딱 맞는 컬러를 찾아보세요🍒</p>
 
     <div class="form-group">
       <label for="skinTone">피부 톤 (Tone)</label>
@@ -216,12 +211,12 @@
     <button class="action-btn recommend-btn" onclick="recommendProducts()">제품 추천 받기</button>
 
     <div id="recommendation-result">
-      <h3 id="resultTitle" style="margin-top: 0; color: #d22c58;">추천 제품 (클릭해서 자세히 보기):</h3>
+      <h3 id="resultTitle" style="margin-top: 0; color: #d22c58;">추천 제품:</h3>
       <ul class="product-list" id="productList"></ul>
     </div>
 
     <div class="shop-link-container">
-      <p style="margin-bottom: 10px; font-size: 14px;">전체 제품을 보고 싶으신가요?</p>
+      <p style="margin-bottom: 10px; font-size: 14px;">모든 제품을 보고 싶으신가요?</p>
       
       <a href="https://tinywonder.co.kr/index.html" target="_blank" class="shop-btn">
         <span class="tw-font">TinyWonder</span> 놀러가기 &rarr;
@@ -233,7 +228,7 @@
 <script>
 // ★ 변수 설정 ★
 let clickCount = 0;
-let firstClickTime = 0;
+let lastClickTime = 0; // 마지막으로 클릭한 시간을 저장하는 변수
 let isEasterEggShown = false; 
 
 const products = [
@@ -268,25 +263,35 @@ function recommendProducts() {
   const resultTitle = document.getElementById('resultTitle');
   const productList = document.getElementById('productList');
 
-  // ★ 1. 이스터에그 상태 확인 및 리셋 ★
+  // 1. 이스터에그 상태면 리셋
   if (isEasterEggShown) {
     isEasterEggShown = false;
     clickCount = 0;
-    firstClickTime = 0;
+    lastClickTime = 0;
   } 
   else {
-    // ★ 2. 시간 및 클릭 수 체크 ★
+    // 2. 아주 빠른 연속 클릭 체크 (간격 0.2초 이내)
     const currentTime = new Date().getTime();
 
-    if (clickCount === 0 || (currentTime - firstClickTime > 5000)) {
+    if (clickCount === 0) {
+      // 첫 클릭
       clickCount = 1;
-      firstClickTime = currentTime;
     } else {
-      clickCount++;
+      // 두 번째 클릭부터는 간격을 잽니다
+      const timeDiff = currentTime - lastClickTime;
+      
+      if (timeDiff <= 200) { // 200ms = 0.2초
+        clickCount++; // 0.2초 안에 눌렀으면 카운트 증가
+      } else {
+        clickCount = 1; // 0.2초가 지났으면 이번 클릭을 다시 '첫 클릭'으로 칩니다
+      }
     }
+    
+    // 마지막 클릭 시간 업데이트
+    lastClickTime = currentTime;
   }
 
-  // ★ 3. 5번 클릭 달성 시 이스터에그 보여주기 ★
+  // 3. 5번 연속 광클 성공 시
   if (clickCount === 5) {
       isEasterEggShown = true; 
       
@@ -301,7 +306,6 @@ function recommendProducts() {
       li.style.border = 'none'; 
       li.style.padding = '20px 0';
 
-      // ★ 이스터에그 텍스트 수정됨 (TinyWonder에 전용 폰트 적용) ★
       li.innerHTML = `
         <div style="font-size: 15px; color: #555; margin-bottom: 10px;">
             🥹다른 제품들도 추천받아 보고 싶으셨나요?<br>
@@ -316,7 +320,7 @@ function recommendProducts() {
       return; 
   }
 
-  // ★ 4. 정상적인 추천 로직 ★
+  // 4. 정상적인 추천 로직
   productList.innerHTML = '';
   resultDiv.style.display = 'block';
   resultTitle.style.display = 'block'; 
