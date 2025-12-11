@@ -23,7 +23,7 @@
     align-items: center;
   }
   
-  /* 2. 제목 스타일 */
+  /* 2. 제목 스타일 (PC) */
   h1 {
     color: #d22c58;
     text-align: center;
@@ -35,9 +35,7 @@
     font-family: 'TinyWonderCustom', serif; 
     font-size: 52px;
     display: block;
-
-/* ▼▼▼ 자간 수정 부분 ▼▼▼ */
-    letter-spacing: -2px; /* 글자 사이를 1px만큼 좁힘 (타이트하게) */
+    letter-spacing: -1px; 
   }
 
   .title-desc {
@@ -46,6 +44,19 @@
     display: block;
     font-weight: bold;
     margin-top: 5px;
+    letter-spacing: 1px;
+  }
+
+  /* ★ 모바일 전용 자간/크기 설정 ★ */
+  @media screen and (max-width: 768px) {
+    .title-brand {
+      font-size: 42px;
+      letter-spacing: 0px; 
+    }
+    .title-desc {
+      font-size: 18px;
+      letter-spacing: 0px; 
+    }
   }
 
   .container {
@@ -117,7 +128,6 @@
     cursor: pointer;
   }
   
-  /* 마우스 올렸을 때 효과 */
   .product-link-block:hover .product-name {
     text-decoration: underline;
     color: #a32245;
@@ -129,8 +139,6 @@
     font-size: 16px;
   }
   
-  /* 아이콘 코드 삭제함 */
-
   .product-texture {
     font-size: 14px;
     color: #666; 
@@ -169,7 +177,7 @@
       <span class="title-desc">Color Recommendations</span>
     </h1>
     
-    <p style="text-align: center; color: #666;">🍒나의 퍼스널 컬러에 딱 맞는 컬러를 찾아보세요🍒</p>
+    <p style="text-align: center; color: #666;">나의 퍼스널 컬러에 딱 맞는 컬러를 찾아보세요.</p>
 
     <div class="form-group">
       <label for="skinTone">피부 톤 (Tone)</label>
@@ -192,7 +200,7 @@
     <button class="action-btn recommend-btn" onclick="recommendProducts()">제품 추천 받기</button>
 
     <div id="recommendation-result">
-      <h3 style="margin-top: 0; color: #d22c58;">추천 제품:</h3>
+      <h3 id="resultTitle" style="margin-top: 0; color: #d22c58;">추천 제품 (클릭해서 자세히 보기):</h3>
       <ul class="product-list" id="productList"></ul>
     </div>
 
@@ -200,13 +208,18 @@
       <p style="margin-bottom: 10px; font-size: 14px;">전체 제품을 보고 싶으신가요?</p>
       
       <a href="https://tinywonder.co.kr/index.html" target="_blank" class="shop-btn">
-        타이니원더로 놀러가기 &rarr;
+        자사몰 홈으로 가기 &rarr;
       </a>
     
     </div>
   </div>
 
 <script>
+// ★ 변수 설정 ★
+let clickCount = 0;
+let firstClickTime = 0;
+let isEasterEggShown = false; // 이스터에그가 현재 떠 있는지 확인하는 변수
+
 const products = [
   // Spring (Warm)
   { name: "01 Apricot For U", texture: "Hyper Dewy", tone: "warm", season: "spring", link: "https://tinywonder.co.kr/product/detail.html?product_no=17&cate_no=24&display_group=1" },
@@ -236,10 +249,65 @@ function recommendProducts() {
   const selectedTone = document.getElementById('skinTone').value;
   const selectedSeason = document.getElementById('season').value;
   const resultDiv = document.getElementById('recommendation-result');
+  const resultTitle = document.getElementById('resultTitle');
   const productList = document.getElementById('productList');
 
+  // ★ 1. 이스터에그가 떠 있는 상태인지 확인 ★
+  if (isEasterEggShown) {
+    // 이미 이스터에그 상태라면 이번 클릭은 '초기화(Reset)'입니다.
+    isEasterEggShown = false;
+    clickCount = 0;
+    firstClickTime = 0;
+    
+    // 카운트를 올리지 않고 바로 정상 결과 로직으로 내려갑니다.
+  } 
+  else {
+    // ★ 2. 이스터에그 상태가 아닐 때만 시간 및 클릭 수 체크 ★
+    const currentTime = new Date().getTime();
+
+    if (clickCount === 0 || (currentTime - firstClickTime > 5000)) {
+      clickCount = 1;
+      firstClickTime = currentTime;
+    } else {
+      clickCount++;
+    }
+  }
+
+  // ★ 3. 5번 클릭 달성 시 이스터에그 보여주기 ★
+  if (clickCount === 5) {
+      isEasterEggShown = true; // 상태 변경
+      
+      productList.innerHTML = '';
+      resultDiv.style.display = 'block';
+      resultTitle.style.display = 'none'; // 제목 숨기기
+
+      const li = document.createElement('li');
+      li.classList.add('product-item');
+      li.style.display = 'block';
+      li.style.textAlign = 'center';
+      li.style.border = 'none'; 
+      li.style.padding = '20px 0';
+
+      li.innerHTML = `
+        <div style="font-size: 15px; color: #555; margin-bottom: 10px;">
+            다른 제품들도 추천받아 보고 싶으셨나요?<br>
+            타이니원더에서 문의주세요.
+        </div>
+        <a href="https://tinywonder.co.kr/" target="_blank" style="color: #d22c58; font-weight: bold; font-size: 18px; text-decoration: none;">
+           💖타이니원더 바로가기💖
+        </a>
+      `;
+      productList.appendChild(li);
+
+      // 이번엔 clickCount를 0으로 만들지 않습니다.
+      // 그래야 다음에 눌렀을 때 'isEasterEggShown' 조건에 걸려서 리셋이 됩니다.
+      return; 
+  }
+
+  // ★ 4. 정상적인 추천 로직 (이스터에그가 아닐 때) ★
   productList.innerHTML = '';
   resultDiv.style.display = 'block';
+  resultTitle.style.display = 'block'; // 제목 다시 보이기
 
   const recommended = products.filter(product => {
     return product.tone === selectedTone && product.season === selectedSeason;
