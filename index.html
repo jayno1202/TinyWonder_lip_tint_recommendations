@@ -39,11 +39,22 @@
     line-height: 1.2;
   }
 
+  /* ★ TinyWonder 로고 스타일 (링크 기능 추가됨) ★ */
   .title-brand {
     font-family: 'TinyWonderCustom', serif; 
     font-size: 52px;
     display: block;
     letter-spacing: -1px; 
+    
+    /* 링크 스타일 제거 및 색상 강제 적용 */
+    text-decoration: none; /* 밑줄 제거 */
+    color: #d22c58;        /* 핑크색 유지 */
+    cursor: pointer;       /* 마우스 올리면 손가락 모양 */
+  }
+
+  /* 마우스 올렸을 때 살짝 진해지는 효과 (선택사항) */
+  .title-brand:hover {
+    color: #a32245; 
   }
 
   .title-desc {
@@ -52,6 +63,7 @@
     font-weight: bold;
     margin-top: 5px;
     letter-spacing: 1px;
+    color: #d22c58; /* 색상 명시 */
   }
 
   /* ★ 모바일 전용 자간/크기 설정 ★ */
@@ -184,7 +196,7 @@
 
   <div class="container">
     <h1>
-      <span class="title-brand">TinyWonder</span>
+      <a href="index.html" class="title-brand">TinyWonder</a>
       <span class="title-desc">Color Recommendations</span>
     </h1>
     
